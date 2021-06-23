@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
 import { useFetch } from "../hooks/useFetch";
-import { useHistory } from "react-router-dom";
+import { useContext } from "react";
+import { DatosAmigosContext } from "../contexts/DatosAmigosContext";
+
 import { FaStar, FaPencilAlt, FaTimes } from "react-icons/fa";
 
-export const PaginaPrincipal = (props) => {
-  const { amigos, llamadaListaAmigos, urlAPI, editarAmigo } = props;
+export const PaginaPrincipal = () => {
+  const { urlAPI, amigos, editarAmigo, llamadaListaAmigos } =
+    useContext(DatosAmigosContext);
   const { fetchGlobal, error } = useFetch();
 
   const valoracionEstrellas = (valoracion) => {

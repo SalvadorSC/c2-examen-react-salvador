@@ -1,18 +1,17 @@
+import { useContext } from "react";
+import { DatosAmigosContext } from "../contexts/DatosAmigosContext";
 import { FormularioAmigos } from "./FormularioAmigos";
 
 export const Cabecera = (props) => {
+  const { nAmigos, setAmigos, amigoParaEditar, setAmigoParaEditar } = props;
   const {
-    nAmigos,
-    showFormulario,
-    setShowFormulario,
     urlAPI,
     amigos,
-    setAmigos,
     editarAmigo,
-    amigoParaEditar,
-    setAmigoParaEditar,
     llamadaListaAmigos,
-  } = props;
+    setShowFormulario,
+    showFormulario,
+  } = useContext(DatosAmigosContext);
   return (
     <>
       <header className="cabecera d-flex justify-content-between align-items-center my-5">

@@ -6,10 +6,8 @@ import {
 } from "react-router-dom";
 import { Cabecera } from "./componentes/Cabecera";
 import { useState, useEffect } from "react";
-import { PaginaFormulario } from "./paginas/PaginaFormulario";
-import { PaginaNotFound } from "./paginas/PaginaNotFound";
 import { PaginaPrincipal } from "./paginas/PaginaPrincipal";
-
+import { DatosAmigosContext } from "./contexts/DatosAmigosContext";
 function App() {
   const [amigos, setAmigos] = useState([]);
   const urlAPI = "http://localhost:3001/amigos";
@@ -44,33 +42,31 @@ function App() {
     <>
       <Router>
         <div className="container">
-          <Cabecera
-            nAmigos={nAmigos}
-            showFormulario={showFormulario}
-            setShowFormulario={setShowFormulario}
-            urlAPI={urlAPI}
-            amigos={amigos}
-            setAmigos={setAmigos}
-            editarAmigo={editarAmigo}
-            amigoParaEditar={amigoParaEditar}
-            setAmigoParaEditar={setAmigoParaEditar}
-            llamadaListaAmigos={llamadaListaAmigos}
-          />
-          <Switch>
-            <Route path="/" exact>
-              <Redirect to="/principal" />
-            </Route>
-            <Route path="/principal" exact>
-              <PaginaPrincipal
-                amigos={amigos}
-                showFormulario={showFormulario}
-                setShowFormulario={setShowFormulario}
-                urlAPI={urlAPI}
-                llamadaListaAmigos={llamadaListaAmigos}
-                editarAmigo={editarAmigo}
-              />
-            </Route>
-          </Switch>
+          <DatosAmigosContext.Provider
+            value={{
+              urlAPI,
+              amigos,
+              editarAmigo,
+              llamadaListaAmigos,
+              setShowFormulario,
+              showFormulario,
+            }}
+          >
+            <Cabecera
+              nAmigos={nAmigos}
+              setAmigos={setAmigos}
+              amigoParaEditar={amigoParaEditar}
+              setAmigoParaEditar={setAmigoParaEditar}
+            />
+            <Switch>
+              <Route path="/" exact>
+                <Redirect to="/principal" />
+              </Route>
+              <Route path="/principal" exact>
+                <PaginaPrincipal />
+              </Route>
+            </Switch>
+          </DatosAmigosContext.Provider>
         </div>
       </Router>
     </>
