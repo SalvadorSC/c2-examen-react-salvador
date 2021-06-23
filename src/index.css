@@ -24,3 +24,11 @@
 .campo-form-amigo {
   border: 1px solid #483d8b;
 }
+
+.mensaje-error {
+  background-color: rgb(255, 240, 240);
+  border: 1px red solid;
+  padding: 5px;
+  padding-left: 10px;
+  border-radius: 5px;
+}
