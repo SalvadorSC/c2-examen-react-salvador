@@ -1,0 +1,26 @@
+.actual {
+  font-weight: bold;
+}
+
+.targeta-amigo {
+  background-color: #483d8b;
+  color: white;
+  height: 150px;
+  border-radius: 15px;
+}
+
+.boton {
+  background-color: #483d8b;
+  color: white;
+}
+
+.btns-control-amigo {
+  font-size: 1.2em;
+}
+.btns-control-amigo {
+  cursor: pointer;
+}
+
+.campo-form-amigo {
+  border: 1px solid #483d8b;
+}
