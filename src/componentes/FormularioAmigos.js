@@ -15,40 +15,57 @@ export const FormularioAmigos = (props) => {
   const [apellido, setApellido] = useState();
   const [valoracion, setValoracion] = useState();
   const { fetchGlobal } = useFetch();
+  const [showMensajeError, setShowMensajeError] = useState(false);
 
   const tratarAmigo = async (e) => {
     e.preventDefault();
-    setShowFormulario(false);
+
     if (amigoParaEditar.id) {
-      const response = await fetchGlobal(`${urlAPI}/${amigoParaEditar.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombre: nombre,
-          apellido: apellido,
-          valoracion: valoracion,
-        }),
-      });
-      if (response) {
-        llamadaListaAmigos(urlAPI);
-        setAmigoParaEditar({});
+      if (nombre && apellido) {
+        const response = await fetchGlobal(`${urlAPI}/${amigoParaEditar.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre: nombre,
+            apellido: apellido,
+            valoracion: valoracion,
+          }),
+        });
+        if (response) {
+          llamadaListaAmigos(urlAPI);
+          setAmigoParaEditar({});
+          setShowFormulario(false);
+        }
+      } else {
+        setShowMensajeError(true);
+        setTimeout(() => {
+          setShowMensajeError(false);
+        }, 3000);
       }
     } else {
-      const response = await fetchGlobal(urlAPI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombre: nombre,
-          apellido: apellido,
-          valoracion: valoracion,
-        }),
-      });
-      if (response) {
-        setAmigos([...amigos, response]);
+      if (nombre && apellido) {
+        const response = await fetchGlobal(urlAPI, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre: nombre,
+            apellido: apellido,
+            valoracion: valoracion,
+          }),
+        });
+        if (response) {
+          setAmigos([...amigos, response]);
+          setShowFormulario(false);
+        }
+      } else {
+        setShowMensajeError(true);
+        setTimeout(() => {
+          setShowMensajeError(false);
+        }, 3000);
       }
     }
   };
@@ -56,7 +73,7 @@ export const FormularioAmigos = (props) => {
     <>
       <form onSubmit={tratarAmigo}>
         <div className="row">
-          <div className="col-4 mb-5">
+          <div className="col-4 ">
             <label htmlFor="nombre">Nombre</label>
             <input
               type="text"
@@ -69,7 +86,7 @@ export const FormularioAmigos = (props) => {
               onChange={(e) => setNombre(e.target.value)}
             />
           </div>
-          <div className="col-4 mb-5">
+          <div className="col-4 ">
             <label htmlFor="apellido">Apellido</label>
             <input
               type="text"
@@ -82,7 +99,7 @@ export const FormularioAmigos = (props) => {
               onChange={(e) => setApellido(e.target.value)}
             />
           </div>
-          <div className="col-2 mb-5">
+          <div className="col-2">
             <label name="valoracion" id="valoracion" htmlFor="valoracion">
               Valoración
             </label>
@@ -117,6 +134,9 @@ export const FormularioAmigos = (props) => {
           </div>
         </div>
       </form>
+      {showMensajeError && (
+        <p className="mensaje-error mb-5">Porfa completa todos los campos!</p>
+      )}
     </>
   );
 };
