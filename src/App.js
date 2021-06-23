@@ -1,36 +1,77 @@
-import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  Redirect,
+  BrowserRouter as Router,
+} from "react-router-dom";
 import { Cabecera } from "./componentes/Cabecera";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PaginaFormulario } from "./paginas/PaginaFormulario";
 import { PaginaNotFound } from "./paginas/PaginaNotFound";
 import { PaginaPrincipal } from "./paginas/PaginaPrincipal";
 
 function App() {
-  const [amigos, setAmigos] = useState([
-    { id: 1, numero: "1000" },
-    { id: 2, numero: "1001" },
-  ]);
+  const [amigos, setAmigos] = useState([]);
+  const urlAPI = "http://localhost:3001/amigos";
+  const [nAmigos, setNAmigos] = useState(amigos.length);
+
+  const [amigoParaEditar, setAmigoParaEditar] = useState({});
+
+  const llamadaListaAmigos = async (urlAPI) => {
+    const response = await fetch(urlAPI);
+    const amigos = await response.json();
+    setAmigos(amigos);
+  };
+  useEffect(() => {
+    llamadaListaAmigos(urlAPI);
+  }, []);
+
+  useEffect(() => {
+    setNAmigos(amigos.length);
+  }, [amigos]);
+  const [showFormulario, setShowFormulario] = useState(false);
+
+  const editarAmigo = (id) => {
+    setShowFormulario(true);
+    setAmigoParaEditar(
+      amigos.find((amigo) => {
+        return amigo.id === parseInt(id);
+      })
+    );
+  };
+
   return (
     <>
       <Router>
-        <Cabecera />
-        <Switch>
-          <Route path="/" exact>
-            <PaginaPrincipal amigos={amigos} />
-          </Route>
-          <Route path="/nuevo-amigo" exact>
-            <PaginaFormulario amigos={amigos} />
-          </Route>
-          <Route path="/editar-amigo" exact>
-            <PaginaFormulario amigos={amigos} />
-          </Route>
-          <Route path="/editar-amigo/:idAmigo" exact>
-            <PaginaFormulario amigos={amigos} />
-          </Route>
-          <Route path="**" exact>
-            <PaginaNotFound amigos={amigos} />
-          </Route>
-        </Switch>
+        <div className="container">
+          <Cabecera
+            nAmigos={nAmigos}
+            showFormulario={showFormulario}
+            setShowFormulario={setShowFormulario}
+            urlAPI={urlAPI}
+            amigos={amigos}
+            setAmigos={setAmigos}
+            editarAmigo={editarAmigo}
+            amigoParaEditar={amigoParaEditar}
+            setAmigoParaEditar={setAmigoParaEditar}
+            llamadaListaAmigos={llamadaListaAmigos}
+          />
+          <Switch>
+            <Route path="/" exact>
+              <Redirect to="/principal" />
+            </Route>
+            <Route path="/principal" exact>
+              <PaginaPrincipal
+                amigos={amigos}
+                showFormulario={showFormulario}
+                setShowFormulario={setShowFormulario}
+                urlAPI={urlAPI}
+                llamadaListaAmigos={llamadaListaAmigos}
+                editarAmigo={editarAmigo}
+              />
+            </Route>
+          </Switch>
+        </div>
       </Router>
     </>
   );
